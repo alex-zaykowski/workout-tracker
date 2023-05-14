@@ -1,0 +1,69 @@
+import { StyleSheet, View, Text } from "react-native";
+import Button from "./Button";
+import Exercise from "../utils/Exercise";
+
+interface ExerciseItemProps {
+  exercise: Exercise;
+  unit: string;
+}
+
+const ExerciseItem: React.FC<ExerciseItemProps> = (props: ExerciseItemProps) => {
+
+  const styles = StyleSheet.create({
+    container: {
+      height: 40,
+      paddingHorizontal: 10,
+      backgroundColor: "rgba(255,255,255,0.05)",
+      flexDirection: "row",
+      alignSelf: "stretch",
+      marginBottom: 10,
+    },
+    cell: {
+      flex: 1,
+      justifyContent: "center",
+      alignSelf: "stretch",
+      marginHorizontal: 10,
+    },
+    title: {
+      color: "white",
+      fontWeight: "bold",
+      fontSize: 12,
+      fontFamily: 'Menlo-Regular',
+    },
+    subtitle: {
+      fontWeight: "500",
+      color: "white",
+      fontSize: 12,
+      fontFamily: 'Menlo-Regular',
+    },
+  });
+
+  const exercise = props.exercise;
+  const unit = props.unit;
+  const weight = +exercise.weight ?? 0;
+
+  console.log(weight);
+
+  return(
+    <View style={styles.container}>
+      <View style={styles.cell}>
+        <Text style={styles.title}>{exercise.name}</Text>
+      </View>
+
+      <View style={styles.cell}>
+        <Text style={styles.subtitle}>{exercise.sets} x {exercise.reps}</Text>
+      </View>
+
+      <View style={styles.cell}>
+        <Text style={styles.subtitle}>{weight}{unit}</Text>
+      </View>
+
+      <View style={styles.cell}>
+        <Button width={20} title="+" onPress={() => console.log('pressed')}/>
+        <Button width={20} title="-" onPress={() => console.log('pressed')}/>
+      </View>
+    </View>
+  );
+};
+
+export default ExerciseItem;
