@@ -16,7 +16,6 @@ const RoutineContainer: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     getExercises(props.workout, props.routine).then((res: Exercise[]) => {
       setExercises(res);
-      console.log(exercises);
     }).catch((err: Error) => Alert.alert('Error', err.message));
   }, []);
 

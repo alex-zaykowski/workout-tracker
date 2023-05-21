@@ -10,9 +10,9 @@ import CodeEditor, {
   CodeEditorSyntaxStyles,
 } from "@rivascva/react-native-code-editor";
 import CreateWorkout from "../sql/CreateWorkout";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useState } from "react";
 import Button from "../components/Button";
-import Ionicons from "@expo/vector-icons/Ionicons";
 
 const routineTemplate = `name: "Workout 1"
 unit: kg
@@ -26,24 +26,43 @@ A:
 
 const CreateScreen = ({ navigation }) => {
   const [routineData, setRoutineData] = useState<string>("");
+  const insets = useSafeAreaInsets();
 
-  const setRoutine = () => {
-    CreateWorkout(routineData);
-  };
-
-  const create = () => {
-    setRoutine();
+  const create = async () => {
+    await CreateWorkout(routineData);
     navigation.navigate("home");
   };
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#0d0d0d",
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
+      paddingLeft: insets.left,
+      paddingRight: insets.right,
+    },
+    nav: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      backgroundColor: '#0d0d0d',
+      paddingLeft: 10,
+      paddingRight: 10,
+    },
+    buttonIcon: {
+      marginRight: 3,
+    },
+  });
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <SafeAreaView style={styles.container}>
         <View style={styles.nav}>
           <Button
-            width={120}
+            width={100}
+            height={40}
             title="+ Done"
-            onPress={() => create()}
+            onPress={async () => await create()}
           />
         </View>
         <ScrollView keyboardDismissMode="on-drag">
@@ -67,21 +86,5 @@ const CreateScreen = ({ navigation }) => {
     </TouchableWithoutFeedback>
   );
 };
-
-const styles = StyleSheet.create({
-  nav: {
-    justifyContent: "flex-end",
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "#0d0d0d",
-    height: "100%",
-  },
-  buttonIcon: {
-    marginRight: 3,
-  },
-});
 
 export default CreateScreen;

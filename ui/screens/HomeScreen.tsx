@@ -1,31 +1,38 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Alert } from 'react-native';
+import { StyleSheet, View, Text, Alert, SafeAreaView, ScrollView } from 'react-native';
 import Button from '../components/Button';
 import { UserContext } from '../utils/UserContext';
-import ExerciseItem from '../components/ExerciseItem';
-import Exercise from '../utils/Exercise';
 import getRoutines from '../sql/getRoutines';
 import { useIsFocused } from '@react-navigation/native';
 import RoutineContainer from '../containers/RoutineContainer';
+import getDefaultWorkout from '../services/asyncStorage/getDefaultWorkout';
 
 const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
   const user = useContext(UserContext);
 
-  const dummyExercise: Exercise = {name: "Bench", routine: "A", sets: 3, reps: 5, weight: 180};
   const [routines, setRoutines] = useState<string[]>([]);
+  const [defaultWorkout, setDefaultWorkout] = useState<string>();
+
+  const fetchDefaultWorkout = async () => {
+    const workout = await getDefaultWorkout();
+    setDefaultWorkout(workout);
+
+    console.log(defaultWorkout);
+  }
 
   useEffect(() => {
     if(isFocused) {
+      fetchDefaultWorkout();
+
       getRoutines('Workout 1').then((res: string[]) => {
         setRoutines(res);
       }).catch((err: Error) => {
-          Alert.alert('Error Fetching Routines', err.message);
+          console.log('no routines found');
       });
     }
-    console.log(routines);
   }, [isFocused]);
 
   const styles = StyleSheet.create({
@@ -42,10 +49,9 @@ const HomeScreen = ({ navigation }) => {
       flexDirection: 'row',
       justifyContent: 'flex-end',
       backgroundColor: '#0d0d0d',
-      paddingLeft: 20,
-      paddingRight: 20,
+      paddingLeft: 10,
+      paddingRight: 10,
       paddingTop: 20,
-      marginBottom: 20,
     },
   });
 
@@ -59,11 +65,15 @@ const HomeScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('settings')}
         />
       </View>
-      {
-        routines?.map((routine: string, index: number) => (
-          <RoutineContainer key={index} workout='Workout 1' routine={routine} />
-        ))
-      }
+      <SafeAreaView>
+        <ScrollView>
+          {
+            routines?.map((routine: string, index: number) => (
+              <RoutineContainer key={index} workout='Workout 1' routine={routine} />
+            ))
+          }
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 };

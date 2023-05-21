@@ -42,8 +42,6 @@ const ExerciseItem: React.FC<ExerciseItemProps> = (props: ExerciseItemProps) => 
   const unit = props.unit;
   const weight = +exercise.weight ?? 0;
 
-  console.log(weight);
-
   return(
     <View style={styles.container}>
       <View style={styles.cell}>
