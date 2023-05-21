@@ -16,24 +16,25 @@ const HomeScreen = ({ navigation }) => {
   const [routines, setRoutines] = useState<string[]>([]);
   const [defaultWorkout, setDefaultWorkout] = useState<string>();
 
-  const fetchDefaultWorkout = async () => {
-    const workout = await getDefaultWorkout();
-    setDefaultWorkout(workout);
-
-    console.log(defaultWorkout);
-  }
-
   useEffect(() => {
     if(isFocused) {
-      fetchDefaultWorkout();
+      const fetchDefaultWorkout = async () => {
+        const workout = await getDefaultWorkout();
+        setDefaultWorkout(workout);
+      }
 
-      getRoutines('Workout 1').then((res: string[]) => {
-        setRoutines(res);
-      }).catch((err: Error) => {
-          console.log('no routines found');
+      fetchDefaultWorkout().then(() => {
+        getRoutines(defaultWorkout).then((res: string[]) => {
+          setRoutines(res);
+        }).catch((err: Error) => {
+            console.log('no routines found');
+        });
       });
+
+      console.log(defaultWorkout);
+      console.log(routines);
     }
-  }, [isFocused]);
+  }, [isFocused, defaultWorkout]);
 
   const styles = StyleSheet.create({
     container: {
@@ -69,7 +70,7 @@ const HomeScreen = ({ navigation }) => {
         <ScrollView>
           {
             routines?.map((routine: string, index: number) => (
-              <RoutineContainer key={index} workout='Workout 1' routine={routine} />
+              <RoutineContainer key={index} workout={defaultWorkout} routine={routine} />
             ))
           }
         </ScrollView>

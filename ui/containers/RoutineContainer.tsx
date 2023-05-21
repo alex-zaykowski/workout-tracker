@@ -17,7 +17,7 @@ const RoutineContainer: React.FC<Props> = (props: Props) => {
     getExercises(props.workout, props.routine).then((res: Exercise[]) => {
       setExercises(res);
     }).catch((err: Error) => Alert.alert('Error', err.message));
-  }, []);
+  }, [exercises]);
 
   const styles = StyleSheet.create({
     container: {
