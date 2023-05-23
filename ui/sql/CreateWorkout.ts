@@ -39,6 +39,7 @@ const CreateWorkout = (yaml: string): Promise<void> => {
             sets INTEGER,
             weight INTEGER,
             time INTEGER,
+            UNIQUE(name, workout, routine),
             FOREIGN KEY (routine)
               REFERENCES routines (name)
             FOREIGN KEY (workout)

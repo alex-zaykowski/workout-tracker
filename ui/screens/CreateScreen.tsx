@@ -9,7 +9,7 @@ import {
 import CodeEditor, {
   CodeEditorSyntaxStyles,
 } from "@rivascva/react-native-code-editor";
-import CreateWorkout from "../sql/CreateWorkout";
+import CreateWorkout from "../sql/createWorkout";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useState } from "react";
 import Button from "../components/Button";
@@ -43,9 +43,9 @@ const CreateScreen = ({ navigation }) => {
       paddingRight: insets.right,
     },
     nav: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      backgroundColor: '#0d0d0d',
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      backgroundColor: "#0d0d0d",
       paddingLeft: 10,
       paddingRight: 10,
     },

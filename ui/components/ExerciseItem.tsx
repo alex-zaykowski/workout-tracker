@@ -5,6 +5,8 @@ import Exercise from "../utils/Exercise";
 interface ExerciseItemProps {
   exercise: Exercise;
   unit: string;
+  increaseWeight: any;
+  decreaseWeight: any;
 }
 
 const ExerciseItem: React.FC<ExerciseItemProps> = (props: ExerciseItemProps) => {
@@ -55,11 +57,8 @@ const ExerciseItem: React.FC<ExerciseItemProps> = (props: ExerciseItemProps) => 
       <View style={styles.cell}>
         <Text style={styles.subtitle}>{weight}{unit}</Text>
       </View>
-
-      <View style={styles.cell}>
-        <Button width={20} title="+" onPress={() => console.log('pressed')}/>
-        <Button width={20} title="-" onPress={() => console.log('pressed')}/>
-      </View>
+        <Button width={35} height={35} marginRight={5} title="-" onPress={props.decreaseWeight}/>
+        <Button width={35} height={35} title="+" onPress={props.increaseWeight}/>
     </View>
   );
 };

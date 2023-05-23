@@ -1,4 +1,5 @@
 interface Exercise {
+  id: string;
   routine: string;
   name: string;
   reps?: number;

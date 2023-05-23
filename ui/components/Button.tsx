@@ -16,6 +16,8 @@ interface ButtonProps {
   fontColor?: string;
   backgroundColor?: string;
   margin?: number;
+  marginRight?: number;
+  marginLeft?: number;
   marginBottom?: number;
   marginTop?: number;
   fontSize?: number;
@@ -33,6 +35,8 @@ const Button = (props: ButtonProps) => {
       paddingVertical: props.verticalPadding,
       width: props.width,
       height: props.height,
+      marginLeft: props.marginLeft,
+      marginRight: props.marginRight,
       marginTop: props.marginTop,
       marginBottom: props.marginBottom,
       alignItems: 'center',

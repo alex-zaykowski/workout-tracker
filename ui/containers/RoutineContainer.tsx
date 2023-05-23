@@ -1,24 +1,17 @@
-import React from 'react';
-import { StyleSheet, View, Text, Alert } from 'react-native';
-import { useState, useEffect } from 'react';
-import Exercise from '../utils/Exercise';
-import getExercises from '../sql/getExercises';
-import ExerciseItem from '../components/ExerciseItem';
+import React from "react";
+import { StyleSheet, View, Text, Alert } from "react-native";
+import { useState, useEffect } from "react";
+import Exercise from "../utils/Exercise";
+import getExercises from "../sql/getExercises";
+import ExerciseItem from "../components/ExerciseItem";
+import Routine from "../utils/Routine";
 
 interface Props {
-  routine: string;
-  workout: string;
+  routine: Routine;
+  changeWeight: Function;
 }
 
 const RoutineContainer: React.FC<Props> = (props: Props) => {
-  const [exercises, setExercises] = useState<Exercise[]>();
-
-  useEffect(() => {
-    getExercises(props.workout, props.routine).then((res: Exercise[]) => {
-      setExercises(res);
-    }).catch((err: Error) => Alert.alert('Error', err.message));
-  }, [exercises]);
-
   const styles = StyleSheet.create({
     container: {
       flexDirection: "row",
@@ -27,27 +20,34 @@ const RoutineContainer: React.FC<Props> = (props: Props) => {
     },
     list: {
       width: "100%",
-
     },
     routineName: {
       color: "red",
       fontWeight: "bold",
-      fontFamily: 'Menlo-Regular',
-    }
+      fontFamily: "Menlo-Regular",
+    },
   });
 
-  return(
+  return (
     <View style={styles.container}>
       <View style={styles.list}>
-      <Text style={styles.routineName}>{props.routine}:</Text>
-      {
-        exercises?.map((exercise: Exercise, index: number) => (
-          <ExerciseItem key={index} exercise={exercise} unit={'lbs'}/>
-        ))
-      }
+        <Text style={styles.routineName}>{props.routine.name}:</Text>
+        {props.routine.exercises?.map((exercise: Exercise, index: number) => (
+          <ExerciseItem
+            key={index}
+            exercise={exercise}
+            unit={"lbs"}
+            increaseWeight={() => {
+              props.changeWeight(exercise, true);
+            }}
+            decreaseWeight={() => {
+              props.changeWeight(exercise, false);
+            }}
+          />
+        ))}
       </View>
     </View>
   );
-}
+};
 
 export default RoutineContainer;
