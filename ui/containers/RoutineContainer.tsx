@@ -1,8 +1,6 @@
 import React from "react";
-import { StyleSheet, View, Text, Alert } from "react-native";
-import { useState, useEffect } from "react";
+import { StyleSheet, View, Text } from "react-native";
 import Exercise from "../utils/Exercise";
-import getExercises from "../sql/getExercises";
 import ExerciseItem from "../components/ExerciseItem";
 import Routine from "../utils/Routine";
 

@@ -1,8 +1,7 @@
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
-import { StyleSheet, View, SafeAreaView, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import Button from "../components/Button";
-import getRoutines from "../sql/getRoutines";
 import { useIsFocused } from "@react-navigation/native";
 import RoutineContainer from "../containers/RoutineContainer";
 import getDefaultWorkout from "../services/asyncStorage/getDefaultWorkout";
@@ -44,7 +43,7 @@ const HomeScreen = ({ navigation }) => {
       positive === true
         ? exercise.weight + weightIncrement
         : exercise.weight - weightIncrement;
-    await setExerciseWeight(newWeight, exercise.name);
+    await setExerciseWeight(newWeight, exercise.name, defaultWorkout);
     setCount(count + 1);
   };
 

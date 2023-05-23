@@ -1,12 +1,13 @@
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StyleSheet, View, Alert, Modal, FlatList } from "react-native";
 import Button from "../components/Button";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import getWeightIncrement from "../services/asyncStorage/getWeightIncrement";
 import setWeightIncrementAsync from "../services/asyncStorage/setWeightIncrement";
 import getWorkouts from "../sql/getWorkouts";
 import setDefaultWorkout from "../services/asyncStorage/setDefaultWorkout";
 import deleteWorkout from "../sql/deleteWorkout";
+import GestureRecognizer from "react-native-swipe-gestures";
 
 const SettingsScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -67,6 +68,14 @@ const SettingsScreen = ({ navigation }) => {
       paddingLeft: insets.left,
       paddingRight: insets.right,
     },
+    modalContainer: {
+      backgroundColor: "#0d0d0d",
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
+      paddingLeft: insets.left,
+      paddingRight: insets.right,
+      justifyContent: "center",
+    },
     buttonContainer: {
       alignSelf: "center",
       flexDirection: "column",
@@ -114,68 +123,65 @@ const SettingsScreen = ({ navigation }) => {
           onPress={() => setWeightIncrementAlert()}
         />
       </View>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.container}>
-          <Button
-            title={"close"}
-            height={30}
-            width={100}
-            onPress={() => setModalVisible(false)}
-          />
-          <View style={styles.buttonContainer}>
-            <FlatList
-              contentContainerStyle={styles.list}
-              keyExtractor={(item) => item}
-              data={workouts}
-              renderItem={({ item }) => (
-                <Button
-                  title={item}
-                  width={styles.button.width}
-                  height={styles.button.height}
-                  marginBottom={styles.button.marginBottom}
-                  onPress={() => {
-                    Alert.alert(item, "", [
-                      {
-                        text: "Set as Default",
-                        onPress: async () => {
-                          await setDefaultWorkout(item);
+      <GestureRecognizer onSwipeDown={() => setModalVisible(false)}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+          style={styles.modalContainer}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.buttonContainer}>
+              <FlatList
+                contentContainerStyle={styles.list}
+                keyExtractor={(item) => item}
+                data={workouts}
+                renderItem={({ item }) => (
+                  <Button
+                    title={item}
+                    width={styles.button.width}
+                    height={styles.button.height}
+                    marginBottom={styles.button.marginBottom}
+                    onPress={() => {
+                      Alert.alert(item, "", [
+                        {
+                          text: "Set as Default",
+                          onPress: async () => {
+                            await setDefaultWorkout(item);
+                          },
                         },
-                      },
-                      {
-                        text: "Delete",
-                        onPress: () => {
-                          Alert.alert("Are you sure?", "", [
-                            {
-                              text: "Yes",
-                              onPress: async () => {
-                                await deleteWorkout(item);
-                                await fetchWorkouts();
+                        {
+                          text: "Delete",
+                          onPress: () => {
+                            Alert.alert("Are you sure?", "", [
+                              {
+                                text: "Yes",
+                                onPress: async () => {
+                                  await deleteWorkout(item);
+                                  await fetchWorkouts();
+                                },
                               },
-                            },
-                            {
-                              text: "No",
-                              onPress: () => console.log("no"),
-                            },
-                          ]);
+                              {
+                                text: "No",
+                                onPress: () => console.log("no"),
+                              },
+                            ]);
+                          },
                         },
-                      },
-                      {
-                        text: "Cancel",
-                        onPress: () => console.log("cancel"),
-                      },
-                    ]);
-                  }}
-                />
-              )}
-            />
+                        {
+                          text: "Cancel",
+                          onPress: () => console.log("cancel"),
+                        },
+                      ]);
+                    }}
+                  />
+                )}
+              />
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      </GestureRecognizer>
     </View>
   );
 };

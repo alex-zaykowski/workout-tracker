@@ -17,7 +17,7 @@ const generateRoutines = async (workout: string): Promise<Routine[]> => {
     for (const routineName of routineNames) {
         const routine = await convertToRoutineObject(workout, routineName);
         routines.push(routine);
-      }
+    }
 
     return routines;
 };

@@ -1,6 +1,6 @@
 import { openDatabase } from "expo-sqlite";
 
-const setExerciseWeight = (weight: number, name: string): Promise<void> => { 
+const setExerciseWeight = (weight: number, name: string, workout: string): Promise<void> => { 
   
   return new Promise((resolve, reject) => {
     const db = openDatabase("db");
@@ -10,7 +10,7 @@ const setExerciseWeight = (weight: number, name: string): Promise<void> => {
         tx.executeSql(`
           UPDATE exercises
           SET weight = ${weight}
-          WHERE name = '${name}';
+          WHERE name = '${name}' AND workout ='${workout}';
           `,
           undefined,
           () => {
