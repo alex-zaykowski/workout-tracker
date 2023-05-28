@@ -14,19 +14,18 @@ const CreateWorkout = (yaml: string): Promise<void> => new Promise<void>((resolv
   db.transaction(
     (tx) => {
       tx.executeSql(
-        'CREATE TABLE IF NOT EXISTS workouts (name VARCHAR(70) PRIMARY KEY, unit CHAR(3) NOT NULL);',
+        'CREATE TABLE IF NOT EXISTS workouts (name VARCHAR(70) PRIMARY KEY, unit CHAR(3) NOT NULL);'
       );
 
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS routines (
-            id INTEGER AUTOINCREMENT NOT NULL,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             name VARCHAR(70), 
             workout VARCHAR(70) NOT NULL,
-            PRIMARY KEY (name, workout),
-            UNIQUE(id),
+            UNIQUE(name, workout),
             FOREIGN KEY (workout)
               REFERENCES workouts (name)
-          );`,
+          );`
       );
 
       tx.executeSql(`
