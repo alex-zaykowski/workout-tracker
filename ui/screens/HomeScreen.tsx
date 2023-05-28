@@ -24,12 +24,17 @@ const HomeScreen: React.FC<any> = ({ navigation }: any) => {
   useEffect(() => {
     if (isFocused) {
       const loadProgramData = async () => {
-        const workoutName = await getDefaultWorkout();
-        const workout = await getWorkout(workoutName);
-        setDefaultWorkout(workout);
+        const workoutName: string = await getDefaultWorkout();
 
-        const workoutRoutines: Routine[] = await generateRoutines(workout);
-        setRoutines(workoutRoutines);
+        try {
+          const workout: Workout = await getWorkout(workoutName);
+          setDefaultWorkout(workout);
+
+          const workoutRoutines: Routine[] = await generateRoutines(workout);
+          setRoutines(workoutRoutines);
+        } catch (ex) {
+          setRoutines(null);
+        }
 
         const increment: number = await getWeightIncrement();
         setWeightIncrement(increment);

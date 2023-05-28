@@ -19,6 +19,8 @@ const RoutineContainer: React.FC<Props> = ({
     text: {
       color: 'white',
       fontFamily: 'Menlo-Regular',
+      alignSelf: 'center',
+      fontSize: 12,
     },
   });
 
