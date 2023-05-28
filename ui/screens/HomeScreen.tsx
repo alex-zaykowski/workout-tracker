@@ -10,30 +10,34 @@ import getWeightIncrement from "../services/asyncStorage/getWeightIncrement";
 import Exercise from "../utils/Exercise";
 import generateRoutines from "../services/routineGenerator/generateRoutines";
 import Routine from "../utils/Routine";
+import Workout from "../utils/Workout";
+import getWorkout from "../sql/getWorkout";
 
 const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
   const [routines, setRoutines] = useState<Routine[]>();
-  const [defaultWorkout, setDefaultWorkout] = useState<string>();
+  const [defaultWorkout, setDefaultWorkout] = useState<Workout>();
   const [weightIncrement, setWeightIncrement] = useState<number>();
   const [count, setCount] = useState<number>(0);
 
   useEffect(() => {
     if (isFocused) {
       const loadProgramData = async () => {
-        const workout = await getDefaultWorkout();
+        const workoutName = await getDefaultWorkout();
+        const workout = await getWorkout(workoutName);
         setDefaultWorkout(workout);
 
-        const workoutRoutines = await generateRoutines(defaultWorkout);
+        const workoutRoutines: Routine[] = await generateRoutines(workout);
         setRoutines(workoutRoutines);
 
-        const increment = await getWeightIncrement();
-        setWeightIncrement(+increment);
+        const increment: number = await getWeightIncrement();
+        setWeightIncrement(increment);
       };
+
       loadProgramData();
     }
-  }, [isFocused, defaultWorkout, count]);
+  }, [isFocused, count]);
 
   const changeExerciseWeight = async (
     exercise: Exercise,
@@ -43,7 +47,7 @@ const HomeScreen = ({ navigation }) => {
       positive === true
         ? exercise.weight + weightIncrement
         : exercise.weight - weightIncrement;
-    await setExerciseWeight(newWeight, exercise.name, defaultWorkout);
+    await setExerciseWeight(newWeight, exercise.name, defaultWorkout.name);
     setCount(count + 1);
   };
 
@@ -87,6 +91,7 @@ const HomeScreen = ({ navigation }) => {
         {routines?.map((routine: Routine, index: number) => (
           <RoutineContainer
             key={index}
+            workout={defaultWorkout}
             routine={routine}
             changeWeight={changeExerciseWeight}
           />

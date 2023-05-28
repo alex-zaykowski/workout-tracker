@@ -16,7 +16,7 @@ const CreateWorkout = (yaml: string): Promise<void> => {
     db.transaction(
       tx => {
         tx.executeSql(
-          'CREATE TABLE IF NOT EXISTS workouts (name VARCHAR(70) PRIMARY KEY, unit INTEGER NOT NULL);'
+          'CREATE TABLE IF NOT EXISTS workouts (name VARCHAR(70) PRIMARY KEY, unit CHAR(3) NOT NULL);'
         );
 
         tx.executeSql(

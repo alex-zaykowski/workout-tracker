@@ -8,6 +8,7 @@ import getWorkouts from "../sql/getWorkouts";
 import setDefaultWorkout from "../services/asyncStorage/setDefaultWorkout";
 import deleteWorkout from "../sql/deleteWorkout";
 import GestureRecognizer from "react-native-swipe-gestures";
+import Workout from "../utils/Workout";
 
 const SettingsScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -17,8 +18,9 @@ const SettingsScreen = ({ navigation }) => {
 
   const fetchWorkouts = async () => {
     getWorkouts()
-      .then((res: string[]) => {
-        setWorkouts(res);
+      .then((res: Workout[]) => {
+        const names: string[] = res.map((workout) => workout.name);
+        setWorkouts(names);
       })
       .catch((err: Error) => console.log(err.message));
   };
@@ -35,7 +37,7 @@ const SettingsScreen = ({ navigation }) => {
           text: "Set",
           onPress: async (weight) => {
             try {
-              await setWeightIncrementAsync(weight);
+              await setWeightIncrementAsync(+weight);
               setWeightIncrement(weight);
             } catch (err) {
               Alert.alert("Error", err.message);
@@ -51,7 +53,7 @@ const SettingsScreen = ({ navigation }) => {
   useEffect(() => {
     const getWeight = async () => {
       const weight = await getWeightIncrement();
-      setWeightIncrement(weight);
+      setWeightIncrement(weight.toString());
     };
 
     getWeight();

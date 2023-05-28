@@ -9,8 +9,9 @@ interface ExerciseItemProps {
   decreaseWeight: any;
 }
 
-const ExerciseItem: React.FC<ExerciseItemProps> = (props: ExerciseItemProps) => {
-
+const ExerciseItem: React.FC<ExerciseItemProps> = (
+  props: ExerciseItemProps
+) => {
   const styles = StyleSheet.create({
     container: {
       height: 40,
@@ -30,13 +31,13 @@ const ExerciseItem: React.FC<ExerciseItemProps> = (props: ExerciseItemProps) => 
       color: "white",
       fontWeight: "bold",
       fontSize: 12,
-      fontFamily: 'Menlo-Regular',
+      fontFamily: "Menlo-Regular",
     },
     subtitle: {
       fontWeight: "500",
       color: "white",
       fontSize: 12,
-      fontFamily: 'Menlo-Regular',
+      fontFamily: "Menlo-Regular",
     },
   });
 
@@ -44,21 +45,32 @@ const ExerciseItem: React.FC<ExerciseItemProps> = (props: ExerciseItemProps) => 
   const unit = props.unit;
   const weight = +exercise.weight ?? 0;
 
-  return(
+  return (
     <View style={styles.container}>
       <View style={styles.cell}>
         <Text style={styles.title}>{exercise.name}</Text>
       </View>
 
       <View style={styles.cell}>
-        <Text style={styles.subtitle}>{exercise.sets} x {exercise.reps}</Text>
+        <Text style={styles.subtitle}>
+          {exercise.sets} x {exercise.reps}
+        </Text>
       </View>
 
       <View style={styles.cell}>
-        <Text style={styles.subtitle}>{weight}{unit}</Text>
+        <Text style={styles.subtitle}>
+          {weight}
+          {unit}
+        </Text>
       </View>
-        <Button width={35} height={35} marginRight={5} title="-" onPress={props.decreaseWeight}/>
-        <Button width={35} height={35} title="+" onPress={props.increaseWeight}/>
+      <Button
+        width={35}
+        height={35}
+        marginRight={5}
+        title="-"
+        onPress={props.decreaseWeight}
+      />
+      <Button width={35} height={35} title="+" onPress={props.increaseWeight} />
     </View>
   );
 };

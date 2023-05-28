@@ -1,10 +1,11 @@
 import { openDatabase } from "expo-sqlite";
+import Workout from "../utils/Workout";
 
-const getWorkouts = (): Promise<string[]> => { 
+const getWorkouts = (): Promise<Workout[]> => { 
 
   return new Promise((resolve, reject) => {
     const db = openDatabase("db");
-    const workouts: string[] = [];
+    const workouts: Workout[] = [];
 
     db.transaction(
       tx => {
@@ -12,8 +13,8 @@ const getWorkouts = (): Promise<string[]> => {
           null,
           (_, result) => {
             const rows = result.rows._array;
-            rows.forEach(row => {
-              workouts.push(row["name"]);
+            rows.forEach((workout: Workout) => {
+              workouts.push(workout);
             });
             resolve(workouts);
           }

@@ -5,6 +5,7 @@ interface Exercise {
   reps?: number;
   sets?: number;
   weight?: number;
+  unit?: string;
   time?: number;
 };
 

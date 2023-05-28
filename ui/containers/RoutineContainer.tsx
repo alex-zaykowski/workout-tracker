@@ -3,8 +3,10 @@ import { StyleSheet, View, Text } from "react-native";
 import Exercise from "../utils/Exercise";
 import ExerciseItem from "../components/ExerciseItem";
 import Routine from "../utils/Routine";
+import Workout from "../utils/Workout";
 
 interface Props {
+  workout: Workout;
   routine: Routine;
   changeWeight: Function;
 }
@@ -34,7 +36,7 @@ const RoutineContainer: React.FC<Props> = (props: Props) => {
           <ExerciseItem
             key={index}
             exercise={exercise}
-            unit={"lbs"}
+            unit={props.workout.unit}
             increaseWeight={() => {
               props.changeWeight(exercise, true);
             }}
