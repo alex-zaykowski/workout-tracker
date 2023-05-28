@@ -1,35 +1,35 @@
-import { openDatabase } from "expo-sqlite";
-import Exercise from "../utils/Exercise";
-import Parser from "../yaml/parser";
+import { openDatabase } from 'expo-sqlite';
+import Exercise from '../utils/Exercise';
+import Parser from '../yaml/parser';
 
-const CreateWorkout = (yaml: string): Promise<void> => {
+const CreateWorkout = (yaml: string): Promise<void> => new Promise<void>((resolve, reject) => {
+  const parser = new Parser(yaml);
+  const db = openDatabase('db');
 
-  return new Promise<void>((resolve, reject) => {
-    const parser = new Parser(yaml);
-    const db = openDatabase("db");
+  const unit: string = parser.getUnit();
+  const workoutName: string = parser.getName();
+  const routines: string[] = parser.getRoutines();
+  const exercises: Exercise[] = parser.getExercises();
 
-    const unit: string = parser.getUnit();
-    const workoutName: string = parser.getName();
-    const routines: string[] = parser.getRoutines();
-    const exercises: Exercise[] = parser.getExercises();
+  db.transaction(
+    (tx) => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS workouts (name VARCHAR(70) PRIMARY KEY, unit CHAR(3) NOT NULL);',
+      );
 
-    db.transaction(
-      tx => {
-        tx.executeSql(
-          'CREATE TABLE IF NOT EXISTS workouts (name VARCHAR(70) PRIMARY KEY, unit CHAR(3) NOT NULL);'
-        );
-
-        tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS routines (
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS routines (
+            id INTEGER AUTOINCREMENT NOT NULL,
             name VARCHAR(70), 
             workout VARCHAR(70) NOT NULL,
             PRIMARY KEY (name, workout),
+            UNIQUE(id),
             FOREIGN KEY (workout)
               REFERENCES workouts (name)
-          );`
-        );
+          );`,
+      );
 
-        tx.executeSql(`
+      tx.executeSql(`
           CREATE TABLE IF NOT EXISTS exercises (
             id INTEGER PRIMARY KEY AUTOINCREMENT, 
             routine VARCHAR(70) NOT NULL,
@@ -47,14 +47,14 @@ const CreateWorkout = (yaml: string): Promise<void> => {
           );
         `);
 
-        tx.executeSql(`INSERT INTO workouts(name, unit) VALUES('${workoutName}', '${unit}');`);
-      
-        routines.forEach((routine: string) => {
-          tx.executeSql(`INSERT INTO routines(name, workout) VALUES('${routine}', '${workoutName}');`);
-        });
+      tx.executeSql(`INSERT INTO workouts(name, unit) VALUES('${workoutName}', '${unit}');`);
 
-        exercises.forEach((exercise: Exercise) => {
-          tx.executeSql(`INSERT INTO exercises(
+      routines.forEach((routine: string) => {
+        tx.executeSql(`INSERT INTO routines(name, workout) VALUES('${routine}', '${workoutName}');`);
+      });
+
+      exercises.forEach((exercise: Exercise) => {
+        tx.executeSql(`INSERT INTO exercises(
             routine,
             workout,
             name, 
@@ -70,16 +70,15 @@ const CreateWorkout = (yaml: string): Promise<void> => {
               '${exercise.weight ?? 0}',
               '${exercise.time ?? 0}'
             );`);
-        });
+      });
 
-        resolve();
-      },
-      (err) => {
-        reject(err);
-      }
-    );
-  });
-}
+      resolve();
+    },
+    (err) => {
+      console.log(err)
+      reject(err);
+    },
+  );
+});
 
 export default CreateWorkout;
-

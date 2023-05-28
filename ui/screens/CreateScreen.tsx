@@ -5,14 +5,14 @@ import {
   Keyboard,
   ScrollView,
   View,
-} from "react-native";
+} from 'react-native';
 import CodeEditor, {
   CodeEditorSyntaxStyles,
-} from "@rivascva/react-native-code-editor";
-import CreateWorkout from "../sql/createWorkout";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useState } from "react";
-import Button from "../components/Button";
+} from '@rivascva/react-native-code-editor';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useState } from 'react';
+import CreateWorkout from '../sql/createWorkout';
+import Button from '../components/Button';
 
 const routineTemplate = `name: "Workout 1"
 unit: kg
@@ -24,28 +24,28 @@ A:
   - {name: "squat", sets: 3, reps: 5}
 `;
 
-const CreateScreen = ({ navigation }) => {
-  const [routineData, setRoutineData] = useState<string>("");
+const CreateScreen: React.FC<any> = ({ navigation }: any) => {
+  const [routineData, setRoutineData] = useState<string>('');
   const insets = useSafeAreaInsets();
 
   const create = async () => {
     await CreateWorkout(routineData);
-    navigation.navigate("home");
+    navigation.navigate('home');
   };
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#0d0d0d",
+      backgroundColor: '#0d0d0d',
       paddingTop: insets.top,
       paddingBottom: insets.bottom,
       paddingLeft: insets.left,
       paddingRight: insets.right,
     },
     nav: {
-      flexDirection: "row",
-      justifyContent: "flex-end",
-      backgroundColor: "#0d0d0d",
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      backgroundColor: '#0d0d0d',
       paddingLeft: 10,
       paddingRight: 10,
     },
@@ -62,18 +62,18 @@ const CreateScreen = ({ navigation }) => {
             width={100}
             height={40}
             title="+ Done"
-            onPress={async () => await create()}
+            onPress={async () => create()}
           />
         </View>
         <ScrollView keyboardDismissMode="on-drag">
           <CodeEditor
             style={{
-              width: "100%",
+              width: '100%',
               fontSize: 14,
               inputLineHeight: 20,
-              height: "100%",
+              height: '100%',
               highlighterLineHeight: 20,
-              backgroundColor: "#0d0d0d",
+              backgroundColor: '#0d0d0d',
             }}
             language="yaml"
             syntaxStyle={CodeEditorSyntaxStyles.gruvboxDark}

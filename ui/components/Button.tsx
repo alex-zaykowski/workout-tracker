@@ -4,7 +4,7 @@ import {
   Pressable,
   Text,
   GestureResponderEvent,
-} from "react-native";
+} from 'react-native';
 
 interface ButtonProps {
   title: string;
@@ -20,13 +20,13 @@ interface ButtonProps {
   marginBottom?: number;
   marginTop?: number;
   fontSize?: number;
-  onPress: (event: GestureResponderEvent) => void;
+  onPress: () => void;
 }
 
-const Button = (props: ButtonProps) => {
+const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
   const styles = StyleSheet.create({
     container: {
-      justifyContent: "center",
+      justifyContent: 'center',
     },
     button: {
       paddingHorizontal: props.horizontalPadding,
@@ -38,14 +38,14 @@ const Button = (props: ButtonProps) => {
       marginRight: props.marginRight,
       marginTop: props.marginTop,
       marginBottom: props.marginBottom,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     buttonText: {
-      color: props.fontColor ?? "#fff",
+      color: props.fontColor ?? '#fff',
       fontSize: props.fontSize ?? 14,
       letterSpacing: 0.25,
-      fontFamily: "Menlo-Regular",
+      fontFamily: 'Menlo-Regular',
     },
   });
 
@@ -55,8 +55,8 @@ const Button = (props: ButtonProps) => {
         style={({ pressed }) => [
           {
             backgroundColor: pressed
-              ? "rgba(255,255,255,0.02)"
-              : "rgba(255,255,255,0.05)",
+              ? 'rgba(255,255,255,0.02)'
+              : 'rgba(255,255,255,0.05)',
           },
           styles.button,
         ]}

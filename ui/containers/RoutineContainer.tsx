@@ -1,52 +1,42 @@
-import React from "react";
-import { StyleSheet, View, Text } from "react-native";
-import Exercise from "../utils/Exercise";
-import ExerciseItem from "../components/ExerciseItem";
-import Routine from "../utils/Routine";
-import Workout from "../utils/Workout";
+import { Text, StyleSheet } from 'react-native';
+import React from 'react';
+import Routine from '../utils/Routine';
+import Workout from '../utils/Workout';
+import RoutineDisplay from '../components/RoutineDisplay';
 
 interface Props {
+  routines: Routine[];
   workout: Workout;
-  routine: Routine;
-  changeWeight: Function;
+  weightChangeFunction: any;
 }
 
-const RoutineContainer: React.FC<Props> = (props: Props) => {
+const RoutineContainer: React.FC<Props> = ({
+  routines,
+  workout,
+  weightChangeFunction,
+}: Props) => {
   const styles = StyleSheet.create({
-    container: {
-      flexDirection: "row",
-      width: "100%",
-      padding: 10,
-    },
-    list: {
-      width: "100%",
-    },
-    routineName: {
-      color: "red",
-      fontWeight: "bold",
-      fontFamily: "Menlo-Regular",
+    text: {
+      color: 'white',
+      fontFamily: 'Menlo-Regular',
     },
   });
 
+  if (!routines) {
+    return <Text style={styles.text}>No workout routine loaded.</Text>;
+  }
+
   return (
-    <View style={styles.container}>
-      <View style={styles.list}>
-        <Text style={styles.routineName}>{props.routine.name}:</Text>
-        {props.routine.exercises?.map((exercise: Exercise, index: number) => (
-          <ExerciseItem
-            key={index}
-            exercise={exercise}
-            unit={props.workout.unit}
-            increaseWeight={() => {
-              props.changeWeight(exercise, true);
-            }}
-            decreaseWeight={() => {
-              props.changeWeight(exercise, false);
-            }}
-          />
-        ))}
-      </View>
-    </View>
+    <>
+      {routines.map((routine: Routine) => (
+        <RoutineDisplay
+          key={routine.id}
+          workout={workout}
+          routine={routine}
+          changeWeight={weightChangeFunction}
+        />
+      ))}
+    </>
   );
 };
 

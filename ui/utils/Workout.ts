@@ -1,4 +1,6 @@
-export default interface Workout{
+interface Workout{
     name: string;
     unit: string;
 }
+
+export default Workout;

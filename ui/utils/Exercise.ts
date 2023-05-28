@@ -7,6 +7,6 @@ interface Exercise {
   weight?: number;
   unit?: string;
   time?: number;
-};
+}
 
 export default Exercise;
