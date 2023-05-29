@@ -1,10 +1,6 @@
-import {
-  StyleSheet,
-  View,
-  Pressable,
-  Text,
-  GestureResponderEvent,
-} from 'react-native';
+/* eslint-disable react/require-default-props */
+import { StyleSheet, View, Pressable, Text } from 'react-native';
+import React from 'react';
 
 interface ButtonProps {
   title: string;
@@ -13,7 +9,6 @@ interface ButtonProps {
   verticalPadding?: number;
   horizontalPadding?: number;
   fontColor?: string;
-  backgroundColor?: string;
   margin?: number;
   marginRight?: number;
   marginLeft?: number;
@@ -23,27 +18,41 @@ interface ButtonProps {
   onPress: () => void;
 }
 
-const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
+const Button: React.FC<ButtonProps> = ({
+  title,
+  horizontalPadding,
+  margin,
+  verticalPadding,
+  width,
+  height,
+  marginLeft,
+  marginRight,
+  marginTop,
+  marginBottom,
+  fontColor,
+  fontSize,
+  onPress,
+}: ButtonProps) => {
   const styles = StyleSheet.create({
     container: {
       justifyContent: 'center',
     },
     button: {
-      paddingHorizontal: props.horizontalPadding,
-      margin: props.margin,
-      paddingVertical: props.verticalPadding,
-      width: props.width,
-      height: props.height,
-      marginLeft: props.marginLeft,
-      marginRight: props.marginRight,
-      marginTop: props.marginTop,
-      marginBottom: props.marginBottom,
+      paddingHorizontal: horizontalPadding,
+      margin,
+      paddingVertical: verticalPadding,
+      width,
+      height,
+      marginLeft,
+      marginRight,
+      marginTop,
+      marginBottom,
       alignItems: 'center',
       justifyContent: 'center',
     },
     buttonText: {
-      color: props.fontColor ?? '#fff',
-      fontSize: props.fontSize ?? 14,
+      color: fontColor ?? '#fff',
+      fontSize: fontSize ?? 14,
       letterSpacing: 0.25,
       fontFamily: 'Menlo-Regular',
     },
@@ -60,9 +69,9 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
           },
           styles.button,
         ]}
-        onPress={props.onPress}
+        onPress={onPress}
       >
-        <Text style={styles.buttonText}>{props.title}</Text>
+        <Text style={styles.buttonText}>{title}</Text>
       </Pressable>
     </View>
   );
