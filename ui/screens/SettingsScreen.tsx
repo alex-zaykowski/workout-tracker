@@ -1,18 +1,18 @@
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { StyleSheet, View, Alert, Modal, FlatList } from "react-native";
-import Button from "../components/Button";
-import React, { useState, useEffect } from "react";
-import getWeightIncrement from "../services/asyncStorage/getWeightIncrement";
-import setWeightIncrementAsync from "../services/asyncStorage/setWeightIncrement";
-import getWorkouts from "../sql/getWorkouts";
-import setDefaultWorkout from "../services/asyncStorage/setDefaultWorkout";
-import deleteWorkout from "../sql/deleteWorkout";
-import GestureRecognizer from "react-native-swipe-gestures";
-import Workout from "../utils/Workout";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, View, Alert, Modal, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import GestureRecognizer from 'react-native-swipe-gestures';
+import Button from '../components/Button';
+import getWeightIncrement from '../services/asyncStorage/getWeightIncrement';
+import setWeightIncrementAsync from '../services/asyncStorage/setWeightIncrement';
+import getWorkouts from '../sql/getWorkouts';
+import setDefaultWorkout from '../services/asyncStorage/setDefaultWorkout';
+import deleteWorkout from '../sql/deleteWorkout';
+import Workout from '../utils/Workout';
 
-const SettingsScreen = ({ navigation }) => {
+const SettingsScreen: React.FC<any> = ({ navigation }: any) => {
   const insets = useSafeAreaInsets();
-  const [weightIncrement, setWeightIncrement] = useState<string>("0");
+  const [weightIncrement, setWeightIncrement] = useState<string>('0');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [workouts, setWorkouts] = useState<string[]>([]);
 
@@ -22,30 +22,30 @@ const SettingsScreen = ({ navigation }) => {
         const names: string[] = res.map((workout) => workout.name);
         setWorkouts(names);
       })
-      .catch((err: Error) => console.log(err.message));
+      .catch((err: Error) => Alert.alert('Error', err.message));
   };
 
   const setWeightIncrementAlert = () => {
     Alert.prompt(
-      "Enter Weight Increment",
-      "",
+      'Enter Weight Increment',
+      '',
       [
         {
-          text: "Cancel",
+          text: 'Cancel',
         },
         {
-          text: "Set",
+          text: 'Set',
           onPress: async (weight) => {
             try {
               await setWeightIncrementAsync(+weight);
               setWeightIncrement(weight);
             } catch (err) {
-              Alert.alert("Error", err.message);
+              Alert.alert('Error', err.message);
             }
           },
         },
       ],
-      "plain-text",
+      'plain-text',
       `${weightIncrement}`
     );
   };
@@ -62,29 +62,29 @@ const SettingsScreen = ({ navigation }) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#0d0d0d",
-      justifyContent: "center",
-      flexDirection: "column",
+      backgroundColor: '#0d0d0d',
+      justifyContent: 'center',
+      flexDirection: 'column',
       paddingTop: insets.top,
       paddingBottom: insets.bottom,
       paddingLeft: insets.left,
       paddingRight: insets.right,
     },
     modalContainer: {
-      backgroundColor: "#0d0d0d",
+      backgroundColor: '#0d0d0d',
       paddingTop: insets.top,
       paddingBottom: insets.bottom,
       paddingLeft: insets.left,
       paddingRight: insets.right,
-      justifyContent: "center",
+      justifyContent: 'center',
     },
     buttonContainer: {
-      alignSelf: "center",
-      flexDirection: "column",
+      alignSelf: 'center',
+      flexDirection: 'column',
     },
     list: {
       flexGrow: 1,
-      justifyContent: "center",
+      justifyContent: 'center',
       paddingTop: insets.top,
       paddingBottom: insets.bottom,
       paddingLeft: insets.left,
@@ -105,7 +105,7 @@ const SettingsScreen = ({ navigation }) => {
           width={styles.button.width}
           height={styles.button.height}
           marginBottom={styles.button.marginBottom}
-          onPress={() => navigation.navigate("create")}
+          onPress={() => navigation.navigate('create')}
         />
         <Button
           title="Workout Programs"
@@ -128,7 +128,7 @@ const SettingsScreen = ({ navigation }) => {
       <GestureRecognizer onSwipeDown={() => setModalVisible(false)}>
         <Modal
           animationType="slide"
-          transparent={true}
+          transparent
           visible={modalVisible}
           onRequestClose={() => setModalVisible(false)}
           style={styles.modalContainer}
@@ -146,34 +146,32 @@ const SettingsScreen = ({ navigation }) => {
                     height={styles.button.height}
                     marginBottom={styles.button.marginBottom}
                     onPress={() => {
-                      Alert.alert(item, "", [
+                      Alert.alert(item, '', [
                         {
-                          text: "Set as Default",
+                          text: 'Set as Default',
                           onPress: async () => {
                             await setDefaultWorkout(item);
                           },
                         },
                         {
-                          text: "Delete",
+                          text: 'Delete',
                           onPress: () => {
-                            Alert.alert("Are you sure?", "", [
+                            Alert.alert('Are you sure?', '', [
                               {
-                                text: "Yes",
+                                text: 'Yes',
                                 onPress: async () => {
                                   await deleteWorkout(item);
                                   await fetchWorkouts();
                                 },
                               },
                               {
-                                text: "No",
-                                onPress: () => console.log("no"),
+                                text: 'No',
                               },
                             ]);
                           },
                         },
                         {
-                          text: "Cancel",
-                          onPress: () => console.log("cancel"),
+                          text: 'Cancel',
                         },
                       ]);
                     }}

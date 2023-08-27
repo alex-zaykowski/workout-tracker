@@ -1,26 +1,22 @@
-import getRoutines from "../../sql/getRoutines";
-import getExercises from "../../sql/getExercises";
-import Exercise from "../../utils/Exercise";
-import Routine from "../../utils/Routine";
-import Workout from "../../utils/Workout";
+import getRoutines from '../../sql/getRoutines';
+import getExercises from '../../sql/getExercises';
+import Exercise from '../../utils/Exercise';
+import Routine from '../../utils/Routine';
+import Workout from '../../utils/Workout';
 
-const convertToRoutineObject = async (workout: Workout, routineName: string): Promise<Routine> => {
-    const exercises: Exercise[] = await getExercises(workout, routineName);
-    const routine: Routine = {name: routineName, exercises: exercises};
+const convertToRoutineObject = async (workout: Workout, routine: Routine): Promise<Routine> => {
+  const exercises: Exercise[] = await getExercises(workout, routine.name);
+  const completeRoutine: Routine = { id: routine.id, name: routine.name, exercises };
 
-    return routine;
-}
+  return completeRoutine;
+};
 
 const generateRoutines = async (workout: Workout): Promise<Routine[]> => {
-    const routineNames: string[] = await getRoutines(workout.name);
-    const routines: Routine[] = [];
+  const routineData: Routine[] = await getRoutines(workout.name);
+  const routinePromises: Promise<Routine>[] = routineData.map((data => convertToRoutineObject(workout, data)));
+  const routines: Routine[] = await Promise.all(routinePromises);
 
-    for (const routineName of routineNames) {
-        const routine = await convertToRoutineObject(workout, routineName);
-        routines.push(routine);
-    }
-
-    return routines;
+  return routines;
 };
 
 export default generateRoutines;

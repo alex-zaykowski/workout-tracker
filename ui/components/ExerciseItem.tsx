@@ -1,6 +1,7 @@
-import { StyleSheet, View, Text } from "react-native";
-import Button from "./Button";
-import Exercise from "../utils/Exercise";
+import { StyleSheet, View, Text } from 'react-native';
+import React from 'react';
+import Button from './Button';
+import Exercise from '../utils/Exercise';
 
 interface ExerciseItemProps {
   exercise: Exercise;
@@ -9,40 +10,41 @@ interface ExerciseItemProps {
   decreaseWeight: any;
 }
 
-const ExerciseItem: React.FC<ExerciseItemProps> = (
-  props: ExerciseItemProps
-) => {
+const ExerciseItem: React.FC<ExerciseItemProps> = ({
+  exercise,
+  unit,
+  increaseWeight,
+  decreaseWeight,
+}: ExerciseItemProps) => {
   const styles = StyleSheet.create({
     container: {
       height: 40,
       paddingHorizontal: 10,
-      backgroundColor: "rgba(255,255,255,0.05)",
-      flexDirection: "row",
-      alignSelf: "stretch",
+      backgroundColor: 'rgba(255,255,255,0.05)',
+      flexDirection: 'row',
+      alignSelf: 'stretch',
       marginBottom: 10,
     },
     cell: {
       flex: 1,
-      justifyContent: "center",
-      alignSelf: "stretch",
+      justifyContent: 'center',
+      alignSelf: 'stretch',
       marginHorizontal: 10,
     },
     title: {
-      color: "white",
-      fontWeight: "bold",
+      color: 'white',
+      fontWeight: 'bold',
       fontSize: 12,
-      fontFamily: "Menlo-Regular",
+      fontFamily: 'Menlo-Regular',
     },
     subtitle: {
-      fontWeight: "500",
-      color: "white",
+      fontWeight: '500',
+      color: 'white',
       fontSize: 12,
-      fontFamily: "Menlo-Regular",
+      fontFamily: 'Menlo-Regular',
     },
   });
 
-  const exercise = props.exercise;
-  const unit = props.unit;
   const weight = +exercise.weight ?? 0;
 
   return (
@@ -68,9 +70,9 @@ const ExerciseItem: React.FC<ExerciseItemProps> = (
         height={35}
         marginRight={5}
         title="-"
-        onPress={props.decreaseWeight}
+        onPress={decreaseWeight}
       />
-      <Button width={35} height={35} title="+" onPress={props.increaseWeight} />
+      <Button width={35} height={35} title="+" onPress={increaseWeight} />
     </View>
   );
 };

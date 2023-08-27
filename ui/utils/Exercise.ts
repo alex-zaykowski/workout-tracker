@@ -1,5 +1,5 @@
 interface Exercise {
-  id: string;
+  id?: string;
   routine: string;
   name: string;
   reps?: number;
@@ -7,6 +7,6 @@ interface Exercise {
   weight?: number;
   unit?: string;
   time?: number;
-};
+}
 
 export default Exercise;

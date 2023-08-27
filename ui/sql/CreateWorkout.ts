@@ -1,29 +1,30 @@
-import { openDatabase } from "expo-sqlite";
-import Exercise from "../utils/Exercise";
-import Parser from "../yaml/parser";
+import { openDatabase } from 'expo-sqlite';
+import Exercise from '../utils/Exercise';
+import Parser from '../yaml/parser';
 
-const CreateWorkout = (yaml: string): Promise<void> => {
+const CreateWorkout = (yaml: string): Promise<void> => new Promise<void>((resolve, reject) => {
+  const parser = new Parser(yaml);
+  const db = openDatabase('db');
 
-  return new Promise<void>((resolve, reject) => {
-    const parser = new Parser(yaml);
-    const db = openDatabase("db");
+  const unit: string = parser.getUnit();
 
-    const unit: string = parser.getUnit();
+  try {
     const workoutName: string = parser.getName();
     const routines: string[] = parser.getRoutines();
     const exercises: Exercise[] = parser.getExercises();
 
     db.transaction(
-      tx => {
+      (tx) => {
         tx.executeSql(
           'CREATE TABLE IF NOT EXISTS workouts (name VARCHAR(70) PRIMARY KEY, unit CHAR(3) NOT NULL);'
         );
 
         tx.executeSql(
           `CREATE TABLE IF NOT EXISTS routines (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             name VARCHAR(70), 
             workout VARCHAR(70) NOT NULL,
-            PRIMARY KEY (name, workout),
+            UNIQUE(name, workout),
             FOREIGN KEY (workout)
               REFERENCES workouts (name)
           );`
@@ -48,7 +49,7 @@ const CreateWorkout = (yaml: string): Promise<void> => {
         `);
 
         tx.executeSql(`INSERT INTO workouts(name, unit) VALUES('${workoutName}', '${unit}');`);
-      
+
         routines.forEach((routine: string) => {
           tx.executeSql(`INSERT INTO routines(name, workout) VALUES('${routine}', '${workoutName}');`);
         });
@@ -76,10 +77,11 @@ const CreateWorkout = (yaml: string): Promise<void> => {
       },
       (err) => {
         reject(err);
-      }
+      },
     );
-  });
-}
+  }catch(err){
+    throw new Error(err.message);
+  }
+});
 
 export default CreateWorkout;
-

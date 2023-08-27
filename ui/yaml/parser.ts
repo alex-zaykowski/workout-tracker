@@ -1,18 +1,18 @@
-import Exercise from '../utils/Exercise';
 import YAML from 'yaml';
+import Exercise from '../utils/Exercise';
 
 export default class Parser {
   workoutSpec: any; // this seems to be the return type of YAML.parse (https://eemeli.org/yaml/#yaml-parse)
- 
-  //TODO: Write validator (e.g: check for duplicate keys and missing keys) 
-  constructor(data: string){
+
+  // TODO: Write validator (e.g: check for duplicate keys and missing keys)
+  constructor(data: string) {
     this.workoutSpec = YAML.parse(data);
   }
 
   getName() {
-    const name: string = this.workoutSpec['name'];
+    const { name } = this.workoutSpec;
 
-    if(!name) {
+    if (!name) {
       throw new Error('Name for workout must be specified');
     }
 
@@ -20,17 +20,17 @@ export default class Parser {
   }
 
   getUnit() {
-    const unit: string = this.workoutSpec['unit'];
-    
-    if(!unit) {
+    const { unit } = this.workoutSpec;
+
+    if (!unit) {
       return 'lb';
     }
 
-    if(unit.localeCompare('kg', 'en', {sensitivity: 'base'}) === 0) {
+    if (unit.localeCompare('kg', 'en', { sensitivity: 'base' }) === 0) {
       return 'kg';
     }
 
-    if(unit.localeCompare('lb', 'en', {sensitivity: 'base'}) === 0) {
+    if (unit.localeCompare('lb', 'en', { sensitivity: 'base' }) === 0) {
       return 'lb';
     }
 
@@ -38,10 +38,16 @@ export default class Parser {
   }
 
   getRoutines() {
-    const routines: string[] = this.workoutSpec['routines'];
+    const {routines} = this.workoutSpec;
 
-    if(!routines) {
+    if (!routines) {
       throw new Error('Routines not specified');
+    }
+
+    const routineSet = new Set(routines);
+
+    if(routineSet.size !== routines.length){
+      throw new Error('There cannot be duplicate routines')
     }
 
     return routines;
@@ -51,20 +57,23 @@ export default class Parser {
     const routines: string[] = this.getRoutines();
     const exerciseList: Exercise[] = [];
 
-    routines.forEach(routine => {
+    routines.forEach((routine) => {
       const exercises = this.workoutSpec[routine];
 
-      if(exercises === undefined) {
+      if (exercises === undefined) {
         return;
       }
 
-      exercises.forEach((exercise: Exercise) => {  
-        if(exercise) {
-          exercise.routine = routine;
-          exerciseList.push(exercise as Exercise);
+      exercises.forEach((exercise: Exercise) => {
+        if (exercise) {
+          const newExercise: Exercise = exercise;
+          if(!newExercise.name){
+            throw new Error('Exercise name must be defined');
+          }
+          newExercise.routine = routine;
+          exerciseList.push(newExercise);
         }
       });
-
     });
 
     return exerciseList;

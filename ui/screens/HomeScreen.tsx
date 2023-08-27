@@ -1,19 +1,19 @@
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useEffect, useState } from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
-import Button from "../components/Button";
-import { useIsFocused } from "@react-navigation/native";
-import RoutineContainer from "../containers/RoutineContainer";
-import getDefaultWorkout from "../services/asyncStorage/getDefaultWorkout";
-import setExerciseWeight from "../sql/setExerciseWeight";
-import getWeightIncrement from "../services/asyncStorage/getWeightIncrement";
-import Exercise from "../utils/Exercise";
-import generateRoutines from "../services/routineGenerator/generateRoutines";
-import Routine from "../utils/Routine";
-import Workout from "../utils/Workout";
-import getWorkout from "../sql/getWorkout";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, ScrollView } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import Button from '../components/Button';
+import getDefaultWorkout from '../services/asyncStorage/getDefaultWorkout';
+import setExerciseWeight from '../sql/setExerciseWeight';
+import getWeightIncrement from '../services/asyncStorage/getWeightIncrement';
+import RoutineContainer from '../containers/RoutineContainer';
+import Exercise from '../utils/Exercise';
+import generateRoutines from '../services/routineGenerator/generateRoutines';
+import Routine from '../utils/Routine';
+import Workout from '../utils/Workout';
+import getWorkout from '../sql/getWorkout';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen: React.FC<any> = ({ navigation }: any) => {
   const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
   const [routines, setRoutines] = useState<Routine[]>();
@@ -24,12 +24,17 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     if (isFocused) {
       const loadProgramData = async () => {
-        const workoutName = await getDefaultWorkout();
-        const workout = await getWorkout(workoutName);
-        setDefaultWorkout(workout);
+        const workoutName: string = await getDefaultWorkout();
 
-        const workoutRoutines: Routine[] = await generateRoutines(workout);
-        setRoutines(workoutRoutines);
+        try {
+          const workout: Workout = await getWorkout(workoutName);
+          setDefaultWorkout(workout);
+
+          const workoutRoutines: Routine[] = await generateRoutines(workout);
+          setRoutines(workoutRoutines);
+        } catch (ex) {
+          setRoutines(null);
+        }
 
         const increment: number = await getWeightIncrement();
         setWeightIncrement(increment);
@@ -47,24 +52,31 @@ const HomeScreen = ({ navigation }) => {
       positive === true
         ? exercise.weight + weightIncrement
         : exercise.weight - weightIncrement;
-    await setExerciseWeight(newWeight, exercise.name, defaultWorkout.name);
+
+    if (newWeight >= 0) {
+      await setExerciseWeight(newWeight, exercise.name, defaultWorkout.name);
+      setCount(count + 1);
+      return;
+    }
+
+    await setExerciseWeight(0, exercise.name, defaultWorkout.name);
     setCount(count + 1);
   };
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#0d0d0d",
-      flexDirection: "column",
+      backgroundColor: '#0d0d0d',
+      flexDirection: 'column',
       paddingTop: insets.top,
       paddingBottom: insets.bottom,
       paddingLeft: insets.left,
       paddingRight: insets.right,
     },
     navBar: {
-      flexDirection: "row",
-      justifyContent: "flex-end",
-      backgroundColor: "#0d0d0d",
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      backgroundColor: '#0d0d0d',
       paddingLeft: 10,
       paddingRight: 10,
       paddingTop: 20,
@@ -84,18 +96,15 @@ const HomeScreen = ({ navigation }) => {
           title="+ Options"
           width={100}
           height={40}
-          onPress={() => navigation.navigate("settings")}
+          onPress={() => navigation.navigate('settings')}
         />
       </View>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        {routines?.map((routine: Routine, index: number) => (
-          <RoutineContainer
-            key={index}
-            workout={defaultWorkout}
-            routine={routine}
-            changeWeight={changeExerciseWeight}
-          />
-        ))}
+        <RoutineContainer
+          workout={defaultWorkout}
+          routines={routines}
+          weightChangeFunction={changeExerciseWeight}
+        />
       </ScrollView>
     </View>
   );
