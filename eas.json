@@ -13,6 +13,12 @@
     "production": {}
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "alexander.zaykowski@gmail.com",
+        "ascAppId": "6449791136",
+        "appleTeamId": "7F778LTNZZ"
+      }
+    }
   }
 }

@@ -44,6 +44,11 @@ const validRoutines = `routines:
 - B
 - C`;
 
+const duplicateRoutines = `routines:
+- A
+- C
+- C`;
+
 describe('Parser.getRoutines', () => {
   test('returns correct routines', () => {
     const validWorkoutSpec = new Parser(validRoutines);
@@ -51,6 +56,12 @@ describe('Parser.getRoutines', () => {
     const routines = validWorkoutSpec.getRoutines();
 
     expect(routines).toStrictEqual(['A', 'B', 'C']);
+  });
+
+  test('throws error on duplicate routine', () => {
+    const invalidWorkoutSpec = new Parser(duplicateRoutines);
+
+    expect(() => invalidWorkoutSpec.getRoutines()).toThrow();
   });
 });
 
@@ -63,6 +74,7 @@ routines:
 A:
   - {name: "bench", sets: 3, reps: 5}
 `;
+
 // TODO: Add test cases for multiple exercises w/ same routine & multiple routines
 describe('Parser.getExercises', () => {
   test('returns correct exercises', () => {
@@ -71,9 +83,9 @@ describe('Parser.getExercises', () => {
     const exercises = validExercisesSpec.getExercises();
 
     const expectedExercises: Exercise[] = [{
-      id: '0', name: 'bench', routine: 'A', sets: 3, reps: 5,
+      name: 'bench', routine: 'A', sets: 3, reps: 5,
     }];
 
-    expect(exercises).toStrictEqual(expectedExercises);
+    expect(exercises).toEqual(expectedExercises);
   });
 });

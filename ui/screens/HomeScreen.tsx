@@ -52,7 +52,14 @@ const HomeScreen: React.FC<any> = ({ navigation }: any) => {
       positive === true
         ? exercise.weight + weightIncrement
         : exercise.weight - weightIncrement;
-    await setExerciseWeight(newWeight, exercise.name, defaultWorkout.name);
+
+    if (newWeight >= 0) {
+      await setExerciseWeight(newWeight, exercise.name, defaultWorkout.name);
+      setCount(count + 1);
+      return;
+    }
+
+    await setExerciseWeight(0, exercise.name, defaultWorkout.name);
     setCount(count + 1);
   };
 

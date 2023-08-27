@@ -38,10 +38,16 @@ export default class Parser {
   }
 
   getRoutines() {
-    const { routines } = this.workoutSpec;
+    const {routines} = this.workoutSpec;
 
     if (!routines) {
       throw new Error('Routines not specified');
+    }
+
+    const routineSet = new Set(routines);
+
+    if(routineSet.size !== routines.length){
+      throw new Error('There cannot be duplicate routines')
     }
 
     return routines;
@@ -61,6 +67,9 @@ export default class Parser {
       exercises.forEach((exercise: Exercise) => {
         if (exercise) {
           const newExercise: Exercise = exercise;
+          if(!newExercise.name){
+            throw new Error('Exercise name must be defined');
+          }
           newExercise.routine = routine;
           exerciseList.push(newExercise);
         }

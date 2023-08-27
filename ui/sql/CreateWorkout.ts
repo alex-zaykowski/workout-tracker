@@ -7,18 +7,20 @@ const CreateWorkout = (yaml: string): Promise<void> => new Promise<void>((resolv
   const db = openDatabase('db');
 
   const unit: string = parser.getUnit();
-  const workoutName: string = parser.getName();
-  const routines: string[] = parser.getRoutines();
-  const exercises: Exercise[] = parser.getExercises();
 
-  db.transaction(
-    (tx) => {
-      tx.executeSql(
-        'CREATE TABLE IF NOT EXISTS workouts (name VARCHAR(70) PRIMARY KEY, unit CHAR(3) NOT NULL);'
-      );
+  try {
+    const workoutName: string = parser.getName();
+    const routines: string[] = parser.getRoutines();
+    const exercises: Exercise[] = parser.getExercises();
 
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS routines (
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          'CREATE TABLE IF NOT EXISTS workouts (name VARCHAR(70) PRIMARY KEY, unit CHAR(3) NOT NULL);'
+        );
+
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS routines (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name VARCHAR(70), 
             workout VARCHAR(70) NOT NULL,
@@ -26,9 +28,9 @@ const CreateWorkout = (yaml: string): Promise<void> => new Promise<void>((resolv
             FOREIGN KEY (workout)
               REFERENCES workouts (name)
           );`
-      );
+        );
 
-      tx.executeSql(`
+        tx.executeSql(`
           CREATE TABLE IF NOT EXISTS exercises (
             id INTEGER PRIMARY KEY AUTOINCREMENT, 
             routine VARCHAR(70) NOT NULL,
@@ -46,14 +48,14 @@ const CreateWorkout = (yaml: string): Promise<void> => new Promise<void>((resolv
           );
         `);
 
-      tx.executeSql(`INSERT INTO workouts(name, unit) VALUES('${workoutName}', '${unit}');`);
+        tx.executeSql(`INSERT INTO workouts(name, unit) VALUES('${workoutName}', '${unit}');`);
 
-      routines.forEach((routine: string) => {
-        tx.executeSql(`INSERT INTO routines(name, workout) VALUES('${routine}', '${workoutName}');`);
-      });
+        routines.forEach((routine: string) => {
+          tx.executeSql(`INSERT INTO routines(name, workout) VALUES('${routine}', '${workoutName}');`);
+        });
 
-      exercises.forEach((exercise: Exercise) => {
-        tx.executeSql(`INSERT INTO exercises(
+        exercises.forEach((exercise: Exercise) => {
+          tx.executeSql(`INSERT INTO exercises(
             routine,
             workout,
             name, 
@@ -69,15 +71,17 @@ const CreateWorkout = (yaml: string): Promise<void> => new Promise<void>((resolv
               '${exercise.weight ?? 0}',
               '${exercise.time ?? 0}'
             );`);
-      });
+        });
 
-      resolve();
-    },
-    (err) => {
-      console.log(err)
-      reject(err);
-    },
-  );
+        resolve();
+      },
+      (err) => {
+        reject(err);
+      },
+    );
+  }catch(err){
+    throw new Error(err.message);
+  }
 });
 
 export default CreateWorkout;

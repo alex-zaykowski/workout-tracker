@@ -22,7 +22,7 @@ const SettingsScreen: React.FC<any> = ({ navigation }: any) => {
         const names: string[] = res.map((workout) => workout.name);
         setWorkouts(names);
       })
-      .catch((err: Error) => console.log(err.message));
+      .catch((err: Error) => Alert.alert('Error', err.message));
   };
 
   const setWeightIncrementAlert = () => {

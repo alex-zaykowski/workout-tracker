@@ -1,4 +1,5 @@
 import {
+  Alert,
   StyleSheet,
   SafeAreaView,
   TouchableWithoutFeedback,
@@ -29,8 +30,12 @@ const CreateScreen: React.FC<any> = ({ navigation }: any) => {
   const insets = useSafeAreaInsets();
 
   const create = async () => {
-    await CreateWorkout(routineData);
-    navigation.navigate('home');
+    try {
+      await CreateWorkout(routineData);
+      navigation.navigate('home');
+    } catch (err) {
+      Alert.alert('Error', err.message);
+    }
   };
 
   const styles = StyleSheet.create({
