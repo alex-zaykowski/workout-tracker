@@ -166,14 +166,12 @@ const SettingsScreen: React.FC<any> = ({ navigation }: any) => {
                               },
                               {
                                 text: 'No',
-                                onPress: () => console.log('no'),
                               },
                             ]);
                           },
                         },
                         {
                           text: 'Cancel',
-                          onPress: () => console.log('cancel'),
                         },
                       ]);
                     }}
